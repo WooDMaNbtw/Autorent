@@ -4,7 +4,6 @@ import datetime
 from tkinter import messagebox
 from PIL import ImageTk, Image
 photo = r"C:\Users\Professional\PycharmProjects\Step\favicon.ico"
-#photo = r"C:\Users\Profa_gl26\PycharmProjects\Profatilov_Nikita\img\Rikka.gif"
 images_for_return = "images/images.png"
 color = "#7dd9f5"
 total_duty = 0
