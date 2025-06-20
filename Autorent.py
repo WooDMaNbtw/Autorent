@@ -144,7 +144,7 @@ class LoginWindow(Frame):
     def login(self, event=None):
         login = self.user_login.get()
         password = self.user_password.get()
-        if login == "Lego" and password == "12345":
+        if login == "Username" and password == "12345":
             self.master.withdraw()
             self.new_infoWindow = Toplevel(self.master)  # Создание нового окна
             self.info_window = InitialWindow(self.new_infoWindow)  # Вызов созданного окна
