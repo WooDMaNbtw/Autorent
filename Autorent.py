@@ -136,7 +136,7 @@ class LoginWindow(Frame):
             "Login": self.user_login.get(),
             "Password": self.user_password.get()
         }
-        with open(r"C:\Users\Professional\PycharmProjects\Step\Others/account.txt", "w") as file:
+        with open("account.txt", "w") as file:
             for i in data.items():
                 file.writelines(": ".join(i) + "\n")
                 print(i)
