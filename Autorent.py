@@ -1,8 +1,14 @@
+import sqlite3
 from tkinter import *
 from tkinter import ttk
 import datetime, sys, os
 from tkinter import messagebox
+
+import bcrypt
 from PIL import ImageTk, Image
+
+from db.init_db import init_db
+
 images_for_return = "images.png"
 color = "#F0F0F0"
 total_duty = 0
@@ -86,79 +92,159 @@ Result_cars = {
 data = []
 
 
-
-
-
 class LoginWindow(Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.master.title("Login Window")
-        self.master.geometry("570x250")
+        self.master.geometry("590x250")
         self.master.resizable(False, False)
-#         # self.master.iconbitmap("@favicon.xbm")
-        self.master.config(width=700, height=700, bg="#edf1f7")
+        self.master.config(bg="#edf1f7")
         self.create_widgets()
 
     def create_widgets(self):
-        lbl_AUTORENT = Label(text="Автопрокат programm", pady=5, font=("Arial", 20, "bold", "underline"), foreground="red")
+        lbl_AUTORENT = Label(self.master, text="Автопрокат programm", pady=5, font=("Arial", 20, "bold", "underline"),
+                             foreground="red", bg="#edf1f7")
         lbl_AUTORENT.grid(row=0, column=1)
-        lbl_ENTRY = Label(text="Input your password and login", pady=20, font=("Arial", 15, "bold"))
+        lbl_ENTRY = Label(self.master, text="Input your password and login", pady=20, font=("Arial", 15, "bold"),
+                          bg="#edf1f7")
         lbl_ENTRY.grid(row=1, column=1)
 
-        lbl_login = Label(text="Login: ", pady=5, font=("Arial", 15))
+        lbl_login = Label(self.master, text="Login: ", pady=5, font=("Arial", 15), bg="#edf1f7")
         lbl_login.grid(row=2)
-        lbl_password = Label(text="Password: ", font=("Arial", 15))
+        lbl_password = Label(self.master, text="Password: ", font=("Arial", 15), bg="#edf1f7")
         lbl_password.grid(row=3)
 
-        self.user_login = Entry(bd=3, width=40)
+        self.user_login = Entry(self.master, bd=3, width=40)
         self.user_login.grid(row=2, column=1)
-        self.user_password = Entry(bd=3, show="*", width=40)
+        self.user_password = Entry(self.master, bd=3, show="*", width=40)
         self.user_password.grid(row=3, column=1)
         self.user_password.bind("<Return>", self.login)
 
-        self.lbl = Label()
+        self.lbl = Label(self.master, bg="#edf1f7")
         self.lbl.grid(row=4)
-        self.btn_login = ttk.Button(text="Login", command=self.login)
-        self.btn_login.grid(row=5, column=1, columnspan=1)
+        self.btn_login = ttk.Button(self.master, text="Login", command=self.login)
+        self.btn_login.grid(row=5, column=1)
 
-        self.btn_quit = ttk.Button(text="Exit", command=self.exit)
-        self.btn_quit.grid(row=5, column=0, columnspan=1)
+        self.btn_register = ttk.Button(self.master, text="Register", command=self.open_register)
+        self.btn_register.grid(row=5, column=2)
+
+        self.btn_quit = ttk.Button(self.master, text="Exit", command=self.exit)
+        self.btn_quit.grid(row=5, column=0)
 
         self.var1 = IntVar()
-        self.check_button = Checkbutton(text="Show password", font=("Arial", 12), variable=self.var1, command=self.show_password)
-        self.check_button.grid(row=3, column=2, columnspan=1)
-
-        self.btn_save = ttk.Button(text="Save", command=self.save)
-        self.btn_save.grid(row=5, column=2)
-
-    def save(self):
-        data = {
-            "Login": self.user_login.get(),
-            "Password": self.user_password.get()
-        }
-        with open("account.txt", "w") as file:
-            for i in data.items():
-                file.writelines(": ".join(i) + "\n")
-                print(i)
+        self.check_button = Checkbutton(self.master, text="Show password", font=("Arial", 12), variable=self.var1,
+                                        command=self.show_password, bg="#edf1f7")
+        self.check_button.grid(row=3, column=2)
 
     def login(self, event=None):
         login = self.user_login.get()
-        password = self.user_password.get()
-        if login == "Username" and password == "12345":
+        password = self.user_password.get().encode('utf-8')
+
+        conn = sqlite3.connect('car_rental.db')
+        c = conn.cursor()
+        c.execute("SELECT password FROM users WHERE login = ?", (login,))
+        result = c.fetchone()
+        conn.close()
+
+        if result and bcrypt.checkpw(password, result[0].encode('utf-8')):
             self.master.withdraw()
-            self.new_infoWindow = Toplevel(self.master)  # Создание нового окна
-            self.info_window = InitialWindow(self.new_infoWindow)  # Вызов созданного окна
+            self.new_infoWindow = Toplevel(self.master)
+            self.info_window = InitialWindow(self.new_infoWindow)
         else:
-           messagebox.showinfo(title="Error data", message="Wrong password or login")
+            messagebox.showinfo(title="Error data", message="Wrong password or login")
+
+    def open_register(self):
+        self.register_window = Toplevel(self.master)
+        RegisterWindow(self.register_window)
 
     def exit(self):
-        self.master.withdraw()
+        self.master.destroy()
 
     def show_password(self):
         if self.var1.get() == 1:
             self.user_password['show'] = ""
         else:
             self.user_password['show'] = "*"
+
+
+class RegisterWindow(Frame):
+    def __init__(self, master=None):
+        super().__init__(master)
+        self.master.title("Registration Window")
+        self.master.geometry("670x230")
+        self.master.resizable(False, False)
+        self.master.config(bg="#edf1f7")
+        self.create_widgets()
+
+    def create_widgets(self):
+        lbl_title = Label(self.master, text="Registration", pady=5, font=("Arial", 20, "bold", "underline"),
+                          foreground="red", bg="#edf1f7")
+        lbl_title.grid(row=0, column=1)
+
+        lbl_login = Label(self.master, text="Login: ", pady=5, font=("Arial", 15), bg="#edf1f7")
+        lbl_login.grid(row=1)
+        lbl_password = Label(self.master, text="Password: ", font=("Arial", 15), bg="#edf1f7")
+        lbl_password.grid(row=2)
+        lbl_confirm = Label(self.master, text="Confirm Password: ", font=("Arial", 15), bg="#edf1f7")
+        lbl_confirm.grid(row=3)
+
+        self.user_login = Entry(self.master, bd=3, width=40)
+        self.user_login.grid(row=1, column=1)
+        self.user_password = Entry(self.master, bd=3, show="*", width=40)
+        self.user_password.grid(row=2, column=1)
+        self.user_confirm = Entry(self.master, bd=3, show="*", width=40)
+        self.user_confirm.grid(row=3, column=1)
+
+        self.btn_register = ttk.Button(self.master, text="Register", command=self.register)
+        self.btn_register.grid(row=4, column=1)
+
+        self.btn_cancel = ttk.Button(self.master, text="Cancel", command=self.cancel)
+        self.btn_cancel.grid(row=4, column=0)
+
+        self.var1 = IntVar()
+        self.check_button = Checkbutton(self.master, text="Show password", font=("Arial", 12), variable=self.var1,
+                                        command=self.show_password, bg="#edf1f7")
+        self.check_button.grid(row=2, column=2)
+
+    def register(self):
+        login = self.user_login.get()
+        password = self.user_password.get()
+        confirm = self.user_confirm.get()
+
+        if not login or not password:
+            messagebox.showerror("Error", "Login and password cannot be empty")
+            return
+
+        if password != confirm:
+            messagebox.showerror("Error", "Passwords do not match")
+            return
+
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+        created_at = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        try:
+            conn = sqlite3.connect('car_rental.db')
+            c = conn.cursor()
+            c.execute("INSERT INTO users (login, password, created_at) VALUES (?, ?, ?)",
+                      (login, hashed_password, created_at))
+            conn.commit()
+            messagebox.showinfo("Success", "Registration successful")
+            self.master.destroy()
+        except sqlite3.IntegrityError:
+            messagebox.showerror("Error", "Login already exists")
+        finally:
+            conn.close()
+
+    def cancel(self):
+        self.master.destroy()
+
+    def show_password(self):
+        if self.var1.get() == 1:
+            self.user_password['show'] = ""
+            self.user_confirm['show'] = ""
+        else:
+            self.user_password['show'] = "*"
+            self.user_confirm['show'] = "*"
 
 
 class InitialWindow(Frame):
@@ -817,7 +903,7 @@ class HelpWindow(Frame):
         self.img_vk = ImageTk.PhotoImage(self.image_vk)
         vk_image = Label(self.master, image=self.img_vk, background=color)
         vk_image.place(x=180, y=320)
-        self.image_ok = Image.open("images/OK.png")
+        self.image_ok = Image.open("./OK.png")
         self.image_ok = self.image_ok.resize((40, 40))
         self.img_ok = ImageTk.PhotoImage(self.image_ok)
         label_vk_link = Label(self.master, text="https://vk.com/", font=("Arial", 10), background=color)
@@ -855,10 +941,8 @@ class HelpWindow(Frame):
         self.info_window = InitialWindow(self.new_infoWindow)  # Вызов созданного окна
 
 
-
-
-
 if __name__ == '__main__':
+    init_db()
     root = Tk()
     app = LoginWindow(root)
     app.mainloop()
