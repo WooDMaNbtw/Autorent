@@ -1,11 +1,10 @@
 from tkinter import *
 from tkinter import ttk
-import datetime
+import datetime, sys, os
 from tkinter import messagebox
 from PIL import ImageTk, Image
-photo = r"C:\Users\Professional\PycharmProjects\Step\favicon.ico"
-images_for_return = "images/images.png"
-color = "#7dd9f5"
+images_for_return = "images.png"
+color = "#F0F0F0"
 total_duty = 0
 cars = {
     "auto1":  {
@@ -96,7 +95,7 @@ class LoginWindow(Frame):
         self.master.title("Login Window")
         self.master.geometry("570x250")
         self.master.resizable(False, False)
-        self.master.iconbitmap(default=photo)
+#         # self.master.iconbitmap("@favicon.xbm")
         self.master.config(width=700, height=700, bg="#edf1f7")
         self.create_widgets()
 
@@ -168,7 +167,7 @@ class InitialWindow(Frame):
         self.master.title("Main window")
         self.master.geometry("400x500")
         self.master.resizable(False, False)
-        self.master.iconbitmap(default=photo)
+#         # self.master.iconbitmap(default=photo)
         self.master.config(width=700, height=700, bg=color)
         self.create_widgets()
 
@@ -217,7 +216,7 @@ class RentWindow(Frame):
         self.master.title("Main window")
         self.master.geometry("1000x800")
         self.master.resizable(False, False)
-        self.master.iconbitmap(default=photo)
+        # self.master.iconbitmap(default=photo)
         self.master.config(width=700, height=700, bg=color)
         self.create_widgets()
 
@@ -499,7 +498,7 @@ class DealCarsWindow(Frame):
         self.master.title("Main window")
         self.master.geometry("1000x650")
         self.master.resizable(False, False)
-        self.master.iconbitmap(default=photo)
+#         self.master.iconbitmap(default=photo)
         self.master.config(width=700, height=700, bg=color)
         self.item = item
         self.create_widgets()
@@ -618,7 +617,7 @@ class ShowInfoWindow(Frame):
         self.master.title("Main window")
         self.master.geometry("1300x600")
         self.master.resizable(False, False)
-        self.master.iconbitmap(default=photo)
+#         self.master.iconbitmap(default=photo)
         self.master.config(width=700, height=700, bg=color)
         self.create_widgets()
 
@@ -672,7 +671,7 @@ class HistoryWindow(Frame) :#, DealCarsWindow):
         self.master.title("Main window")
         self.master.geometry("1000x800")
         self.master.resizable(False, False)
-        self.master.iconbitmap(default=photo)
+#         self.master.iconbitmap(default=photo)
         self.master.config(width=700, height=700, bg=color)
         self.create_widgets()
 
@@ -739,7 +738,7 @@ class InformationWindow(Frame):
         self.master.title("Main window")
         self.master.geometry("1400x660")
         self.master.resizable(False, False)
-        self.master.iconbitmap(default=photo)
+#         self.master.iconbitmap(default=photo)
         self.master.config(width=700, height=700, bg=color)
         self.create_widgets()
 
@@ -786,7 +785,7 @@ class HelpWindow(Frame):
         self.master.title("Main window")
         self.master.geometry("470x400")
         self.master.resizable(False, False)
-        self.master.iconbitmap(default=photo)
+#         self.master.iconbitmap(default=photo)
         self.master.config(width=700, height=700, bg=color)
         self.create_widgets()
 
@@ -795,25 +794,25 @@ class HelpWindow(Frame):
         help_name_label.place(x=130, y=10)
         help_label_email = Label(self.master, text="emails:", font=("Arial", 15), background=color)
         help_label_email.place(x=140, y=70)
-        help_email = Label(self.master, text="superpomoj5678j@mail.com", font=("Arial", 10), background=color)
+        help_email = Label(self.master, text="support1@mail.com", font=("Arial", 10), background=color)
         help_email.place(x=110, y=100)
-        help_email = Label(self.master, text="superpomoj1234j@mail.com", font=("Arial", 10), background=color)
+        help_email = Label(self.master, text="support2@mail.com", font=("Arial", 10), background=color)
         help_email.place(x=110, y=130)
 
         help_label_email = Label(self.master, text="contacts:", font=("Arial", 15), background=color)
         help_label_email.place(x=300, y=70)
-        help_email = Label(self.master, text="+99451883928", font=("Arial", 10), background=color)
+        help_email = Label(self.master, text="+89012222222", font=("Arial", 10), background=color)
         help_email.place(x=300, y=110)
-        help_email = Label(self.master, text="+99451883456", font=("Arial", 10), background=color)
+        help_email = Label(self.master, text="+89012222222", font=("Arial", 10), background=color)
         help_email.place(x=300, y=150)
-        help_email = Label(self.master, text="+99453125245", font=("Arial", 10), background=color)
+        help_email = Label(self.master, text="+89012222222", font=("Arial", 10), background=color)
         help_email.place(x=300, y=190)
-        help_email = Label(self.master, text="+99451123444", font=("Arial", 10), background=color)
+        help_email = Label(self.master, text="+89012222222", font=("Arial", 10), background=color)
         help_email.place(x=300, y=230)
 
         help_web = Label(self.master, text="Наши соцсети:", font=("Arial", 15), background=color)
         help_web.place(x=180, y=280)
-        self.image_vk = Image.open("images/VK.png")
+        self.image_vk = Image.open("./VK.png")
         self.image_vk = self.image_vk.resize((40, 40))
         self.img_vk = ImageTk.PhotoImage(self.image_vk)
         vk_image = Label(self.master, image=self.img_vk, background=color)
